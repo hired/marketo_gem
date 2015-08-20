@@ -178,7 +178,7 @@ module Rapleaf
       end
 
       def get_multi_leads(lead_key)
-        response = send_request("ns1:paramsGetMultipleLeads", {lead_selector: lead_key.to_hash})
+        response = send_request("ns1:paramsGetMultipleLeads", {lead_key: lead_key.to_hash})
         return response[:success_get_multiple_lead][:result][:lead_record_list]
       end
 
