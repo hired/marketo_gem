@@ -35,6 +35,15 @@ module Rapleaf
             :key_value => key_value
         }
       end
+
+      it "should store valuye as @key_values if multiple values are passed in" do
+        key_values = [1,2,3,4]
+        key_type = LeadKeyType::IDNUM
+        lead_keys = LeadKeys.new(key_type, *key_values)
+        lead_keys.key_type.should == key_type
+        lead_keys.key_values.should == key_values
+      end
+
     end
   end
 end

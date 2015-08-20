@@ -2,7 +2,7 @@ require File.expand_path('authentication_header', File.dirname(__FILE__))
 
 module Rapleaf
   module Marketo
-    def self.new_client(access_key, secret_key, api_subdomain = 'na-i', api_version = '2_3', document_version = '2_3')
+    def self.new_client(access_key, secret_key, api_subdomain = 'na-i', api_version = '2_9', document_version = '2_9')
       client = Savon::Client.new do
         wsdl.endpoint     = "https://#{api_subdomain}.mktoapi.com/soap/mktows/#{api_version}"
         wsdl.document     = "http://app.marketo.com/soap/mktows/#{document_version}?WSDL"
@@ -71,6 +71,10 @@ module Rapleaf
 
       def get_lead_by_email(email)
         get_lead(LeadKey.new(LeadKeyType::EMAIL, email))
+      end
+
+      def get_multi_leads_by_idnum(*idums)
+        get_multi_leads(LeadKeys.new(LeadKeyType::IDNUM, *idums))
       end
 
       def set_logger(logger)
@@ -172,6 +176,12 @@ module Rapleaf
         response = send_request("ns1:paramsGetLead", {:lead_key => lead_key.to_hash})
         return LeadRecord.from_hash(response[:success_get_lead][:result][:lead_record_list][:lead_record])
       end
+
+      def get_multi_leads(lead_key)
+        response = send_request("ns1:paramsGetMultipleLeads", {lead_selector: lead_key.to_hash})
+        return response[:success_get_multiple_lead][:result][:lead_record_list]
+      end
+
 
       def send_request(namespace, body)
         @header.set_time(DateTime.now)
